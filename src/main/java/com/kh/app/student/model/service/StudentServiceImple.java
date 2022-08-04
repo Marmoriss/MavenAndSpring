@@ -2,6 +2,7 @@ package com.kh.app.student.model.service;
 
 import static com.kh.app.common.SqlSessionUtils.getSqlSession;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
@@ -65,6 +66,13 @@ public class StudentServiceImple implements StudentService {
 	}
 	
 	@Override
+	public Map<String, Object> selectOneStudentMap(int no) {
+		try(SqlSession sqlSession = getSqlSession()){
+			return studentDao.selectOneStudentMap(sqlSession, no);
+		}
+	}
+	
+	@Override
 	public int updateStudent(Student student) {
 		SqlSession sqlSession = getSqlSession();
 		int result = 0;
@@ -96,9 +104,19 @@ public class StudentServiceImple implements StudentService {
 		return result;
 	}
 	
+	@Override
+	public List<Student> selectStudentList() {
+		try(SqlSession sqlSession = getSqlSession()){
+			return studentDao.selectStudentList(sqlSession);
+		}
+	}
 	
-	
-	
+	@Override
+	public List<Map<String, Object>> selectStudentMapList() {
+		try(SqlSession sqlSession = getSqlSession()){
+			return studentDao.selectStudentMapList(sqlSession);
+		}
+	}
 	
 	
 	

@@ -54,3 +54,46 @@ where
     no = 3;
 
 commit;
+rollback;
+update
+        student
+    set
+       name = '김감자',
+       tel = '01011112222',
+       updated_at = sysdate
+    where
+        no = 4;
+        
+--  kh 계정의 데이터 사용하기
+
+select * from kh.employee;
+select * from kh.department;
+select * from kh.job;
+
+-- select 권한 부여
+grant select on kh.employee to web;
+grant select on kh.department to web;
+grant select on kh.job to web;
+
+-- 관리자 계정 : create synonym 권한 부여
+grant create synonym to web;
+
+-- synonym 동의어 객체 생성
+create synonym emp for kh.employee;
+create synonym dept for kh.department;
+create synonym job for kh.job;
+
+select * from emp;
+select * from dept;
+select * from job;
+
+
+
+
+
+
+
+
+
+
+

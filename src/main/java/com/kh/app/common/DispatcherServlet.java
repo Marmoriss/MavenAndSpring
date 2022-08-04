@@ -17,8 +17,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.kh.app.common.exception.MethodNotAllowedException;
-import com.kh.app.student.model.dao.StudentDao;
+import com.kh.app.emp.model.dao.EmpDaoImpl;
+import com.kh.app.emp.model.service.EmpService;
+import com.kh.app.emp.model.service.EmpServiceImpl;
 import com.kh.app.student.model.dao.StudentDaoImpl;
+import com.kh.app.student.model.dto.Student;
 import com.kh.app.student.model.service.StudentService;
 import com.kh.app.student.model.service.StudentServiceImple;
 
@@ -52,17 +55,28 @@ public class DispatcherServlet extends HttpServlet {
     	prop.load(new FileReader(filename));
     	
     	// 2. Properties객체 -> urlCommandMap에 요소 추가(String = AbstractController 객체)
-    	StudentDao studentDao = new StudentDaoImpl();
-    	StudentService studentService = new StudentServiceImple(studentDao);
+    	StudentService studentService = new StudentServiceImple(new StudentDaoImpl());
+    	EmpService empService = new EmpServiceImpl(new EmpDaoImpl());
+    	
     	Set<String> urls = prop.stringPropertyNames(); // prop의 key값만 가져옴
     	for(String url : urls) {
     		
     		String className = prop.getProperty(url); // key값으로 Class주소 가져옴
     		Class<?> clz = Class.forName(className); // 클래스 객체 생성
+    		Class<?>[] params = new Class<?>[1];
+    		Object[] args = new Object[1];
+    		
+    		if(url.startsWith("/student")) {
+    			params[0] = StudentService.class;
+    			args[0] = studentService;
+    		} else if(url.startsWith("/emp")) {
+    			params[0] = EmpService.class;
+    			args[0] = empService;
+    		}
     		
     		// 클래스의 파라미터 생성자 만들기
-    		Constructor<?> constructor = clz.getDeclaredConstructor(StudentService.class);
-    		AbstractController controller = (AbstractController) constructor.newInstance(studentService);
+    		Constructor<?> constructor = clz.getDeclaredConstructor(params);
+    		AbstractController controller = (AbstractController) constructor.newInstance(args);
     		
     		urlCommandMap.put(url, controller);
     	}

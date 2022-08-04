@@ -39,21 +39,17 @@ public class StudentUpdateController extends AbstractController {
 		student.setName(name);
 		student.setTel(tel);
 		
-		log.debug(no);
-		log.debug(name);
-		log.debug(tel);
+		log.debug(student);
 		
 		// 2. 업무로직
 		int result = studentService.updateStudent(student);
 		log.debug(result);
 		
 		// 3. Json으로 응답
-		String msg = "";
-		if(result > 0) {
-			msg = "성공적으로 수정했습니다.";
-		}
 		response.setContentType("application/json; charset=utf-8");
-		new Gson().toJson(msg, response.getWriter());
+		Map<String, Object> map = new HashMap<>();
+		map.put("msg", "학생 정보를 성공적으로 수정했습니다.");
+		new Gson().toJson(map, response.getWriter());
 		
 		return null;
 	}

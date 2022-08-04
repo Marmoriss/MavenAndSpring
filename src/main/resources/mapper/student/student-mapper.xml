@@ -29,7 +29,7 @@
             deleted_at is null
     </select>
     
-    <select id="selectOneStudent" resultType="student">
+    <select id="selectOneStudent" resultMap="studentDtoMap">
         select
             no,
             name,
@@ -45,6 +45,60 @@
             deleted_at is null
     </select>
     
+    <select id="selectStudentList" resultMap="studentDtoMap">
+        select
+            *
+        from
+            student
+        where
+            deleted_at is null
+        order by
+            no
+    </select>
+    
+    <resultMap type ="student" id="studentDtoMap">
+        <!-- PK는 id로 나머지 컬럼은 result로 작성 -->
+        <!-- column은 db컬럼명(대소문자 구분x), property는 자바 변수명(대소문자 구분o) -->
+        <!-- 기본적으로 같은 이름의 컬럼을 찾기때문에 아래의 코드를 생략해도 무방하다. -->
+        <id column="no" property="no"/>
+        <result column="name" property="name"/>
+        <result column="tel" property="tel"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="deleted_at" property="deletedAt"/>
+    </resultMap>
+    
+    <select id="selectOneStudentMap" resultMap="studentMap">
+        select
+            *
+        from
+            student
+        where
+            no = #{no}
+            and
+            deleted_at is null
+    </select>
+    
+    <select id="selectStudentMapList" resultMap="studentMap">
+        select
+            *
+        from
+            student
+        where
+            deleted_at is null
+        order by
+            no
+    </select>
+    
+    <resultMap type="map" id="studentMap">
+        <id column="no" property="no"/>
+        <result column="name" property="name"/>
+        <result column="tel" property="tel"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="deleted_at" property="deletedAt"/>
+    </resultMap>
+    
     <update id="updateStudent">
         update
             student
@@ -54,6 +108,8 @@
            updated_at = sysdate
         where
             no = #{no}
+            and
+            deleted_at is null
     </update>
     <update id="deleteStudent">
         update

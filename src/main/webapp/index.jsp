@@ -15,8 +15,13 @@
     <ul>
     	<li><a href="${pageContext.request.contextPath}/student/studentEnroll.do">학생 등록</a></li>
     	<li><a href="${pageContext.request.contextPath}/student/selectOne.do">한 건 조회</a></li>
+    	<li><a href="${pageContext.request.contextPath}/student/selectList.do">여러 건 조회</a></li>
     </ul>
     
+    <h2>emp</h2>
+    <ul>
+    	<li><a href="<c:url value="/emp/search1.do" />">search1</a></li>
+    </ul>
     
     <script src="${pageContext.request.contextPath}/js/jquery-3.6.0.js"></script>
     <script>

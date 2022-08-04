@@ -1,6 +1,8 @@
 package com.kh.app.student.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -32,15 +34,12 @@ public class StudentDeleteController extends AbstractController {
 		
 		// 2. 업무 로직
 		int result = studentService.deleteStudent(no);
-		log.debug(result);
 		
 		// 3. Json으로 응답
-		String msg = "";
-		if(result > 0) {
-			msg = "성공적으로 삭제했습니다.";
-		}
 		response.setContentType("application/json; charset=utf-8");
-		new Gson().toJson(msg, response.getWriter());
+		Map<String, Object> map = new HashMap<>();
+		map.put("msg", "학생 정보를 성공적으로 삭제했습니다.");
+		new Gson().toJson(map, response.getWriter());
 		
 		return null;
 	}

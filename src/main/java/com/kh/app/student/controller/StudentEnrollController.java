@@ -12,15 +12,16 @@ import com.kh.app.common.AbstractController;
 import com.kh.app.student.model.dto.Student;
 import com.kh.app.student.model.service.StudentService;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j;
+
+@Log4j
+@RequiredArgsConstructor
 public class StudentEnrollController extends AbstractController {
 	
-	private StudentService studentService;
-	static final Logger log = Logger.getLogger(StudentEnrollController.class); 
+	private final StudentService studentService;
+//	static final Logger log = Logger.getLogger(StudentEnrollController.class); 
 	
-	public StudentEnrollController(StudentService studentService) {
-		this.studentService = studentService;
-	}
-
 	@Override
 	public String doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		return "student/studentEnroll";

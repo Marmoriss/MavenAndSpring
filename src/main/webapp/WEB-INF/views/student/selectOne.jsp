@@ -83,7 +83,8 @@ table.tbl-student tr:last-of-type td:first-child{text-align:center;}
 		const no = e.target.no.value;
 		
 		$.ajax({
-			url : '${pageContext.request.contextPath}/student/student.do',
+			//url : '${pageContext.request.contextPath}/student/student.do',
+			url : '${pageContext.request.contextPath}/student/studentMap.do',
 			data : {no},
 			success(student){
 				console.log(student);
@@ -102,36 +103,38 @@ table.tbl-student tr:last-of-type td:first-child{text-align:center;}
 		});
 	});
 	
-	updateStudent = () => {
-		const frm = document.querySelector("[name=studentUpdateFrm]");
-		const no = frm.no.value;
-		const name = frm.name.value;
-		const tel = frm.tel.value;
+	const updateStudent = () => {
+		const frm = document.studentUpdateFrm;
+		const student ={
+				no : frm.no.value,
+				name : frm.name.value,
+				tel : frm.tel.value
+		};
+		console.log(student);
 		
 		$.ajax({
 			url : '${pageContext.request.contextPath}/student/studentUpdate.do',
 			method : "POST",
-			data : {no, name, tel},
+			data : student,
 			success(response){
 				console.log(response);
-				alert(response);
+				alert(response.msg);
+				frm.reset();
 			},
 			error : console.log
 		});
 	};
 	
-	deleteStudent = () => {
-		const updateFrm = document.querySelector("[name=studentUpdateFrm]");
-		const searchFrm = document.querySelector("[name=studentSearchFrm]");
-        const no = updateFrm.no.value;
-        
+	const deleteStudent = () => {
+		const frm = document.studentUpdateFrm;
+		
         $.ajax({
         	url : '${pageContext.request.contextPath}/student/studentDelete.do',
             method : "POST",
-            data : {no},
+            data : {no : frm.no.value},
             success(response){
             	console.log(response);
-            	alert(response);
+            	alert(response.msg);
             	location.reload();
             },
             error : console.log
