@@ -9,9 +9,10 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 public class SqlSessionUtils {
+	
+	static SqlSessionFactory factory;
 
-	public static SqlSession getSqlSession() {
-		SqlSession sqlSession = null;
+	static {
 		String resource = "/mybatis-config.xml";
 		
 		// 1. FactoryBuilder
@@ -24,12 +25,13 @@ public class SqlSessionUtils {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		SqlSessionFactory factory = builder.build(is);
+		factory = builder.build(is);
+	}
+	
+	public static SqlSession getSqlSession() {
 		
 		// 3. SqlSession
-		sqlSession = factory.openSession(false); // autoCommit 여부
-		
-		return sqlSession;
+		return factory.openSession(false);// autoCommit 여부
 	}
 
 	

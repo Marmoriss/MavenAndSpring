@@ -22,4 +22,55 @@ public class EmpServiceImpl implements EmpService {
 			return empDao.selectEmpList(sqlSession);
 		}
 	}
+	
+	@Override
+	public List<Map<String, Object>> search1(Map<String, Object> param) {
+		try(SqlSession sqlSession = getSqlSession()){
+			return empDao.search1(sqlSession, param);
+		}
+	}
+	
+	@Override
+	public List<Map<String, Object>> search2(Map<String, Object> param) {
+		try(SqlSession sqlSession = getSqlSession()){
+			return empDao.search2(sqlSession, param);
+		}
+	}
+	
+	@Override
+	public List<Map<String, Object>> selectJobList() {
+		try(SqlSession sqlSession = getSqlSession()){
+			return empDao.selectJobList(sqlSession);
+		}
+	}
+	
+	@Override
+	public List<Map<String, Object>> search3(Map<String, Object> param) {
+		try(SqlSession sqlSession = getSqlSession()){
+			return empDao.search3(sqlSession, param);
+		}
+	}
+	
+	@Override
+	public List<Map<String, Object>> selectDeptList() {
+		try(SqlSession sqlSession = getSqlSession()){
+			return empDao.selectDeptList(sqlSession);
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

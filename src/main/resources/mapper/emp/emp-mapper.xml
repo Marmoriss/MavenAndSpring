@@ -4,6 +4,66 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="emp">
 
+    <select id="search1" resultMap="empMap">
+        select
+            *
+        from
+            emp
+        where
+            ${searchType} like '%' || #{searchKeyword} || '%'
+    </select>
+    
+    <select id="search2" resultMap="empMap">
+        select 
+            * 
+            from ( 
+                select 
+                    e.*, 
+                    decode(substr(emp_no, 8, 1), '1', '남', '3', '남', '여') gender 
+                from 
+                    emp e) e
+        <!--  
+            where태그는 시작하는 and, or 제거함.
+            where태그 내부의 if문이 모두 false인 경우(where안이 빈경우) where키워드를 제거함.
+        -->
+		<where>
+			<if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''"> ${searchType} like '%' || #{searchKeyword} || '%' </if>
+			<if test="gender != null"> and gender = #{gender} </if>
+			<!--  
+            <if test="salary != null and salary != 0">
+                <if test="salaryCompare != null and salaryCompare eq 'le'">
+                    and 
+                        salary <![CDATA[ <= ]]> #{salary}
+                </if>
+                <if test="salaryCompare != null and salaryCompare eq 'ge'">
+                    <![CDATA[ 
+                    and 
+                        salary >= #{salary}
+                    ]]>
+                </if>
+            </if> 
+             -->
+			<!--  if, when의 test속성에는 
+	                && || < > <= >= 연산자 사용불가
+	                and or lt gt le ge 사용할 것! 
+	         -->
+			<if test="salary != null and salary != 0">
+				<choose>
+					<when test="salaryCompare != null and salaryCompare eq 'le'">
+						and salary
+						<![CDATA[ <= ]]>
+						#{salary}
+					</when>
+					<when test="salaryCompare != null and salaryCompare eq 'ge'">
+					   <![CDATA[ and salary >= #{salary} ]]>
+					</when>
+					<otherwise/>
+				</choose>
+			</if>
+		</where>
+	</select>
+    
+    
     <select id="selectEmpList" resultMap="empMap">
         select
             *
@@ -13,14 +73,45 @@
             emp_id
     </select>
     
+    <select id="search3" resultMap="empMap">
+        select 
+            * 
+        from ( 
+            select 
+                e.*, 
+                (select job_name from job where job_code = e.job_code) job_name,
+                (select dept_title from dept where dept_id = e.dept_code) dept_title,
+                decode(substr(emp_no, 8, 1), '1', '남', '3', '남', '여') gender 
+            from 
+                emp e) e
+        <where>
+            <if test="jobCodes != null">
+                e.job_code in
+                <foreach collection="jobCodes" item="jobCode" open="(" close=")" separator=",">
+                    #{jobCode}
+                </foreach>
+            </if>
+            <if test="deptList != null">
+                and
+                nvl(e.dept_code, 'D0') in
+                <foreach collection="deptList" item="deptCode" open="(" close=")" separator=",">
+                    #{deptCode}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    
     <resultMap type="map" id="empMap">
         <id column="emp_id" property="empId"/>
         <result column="emp_name" property="empName"/>
         <result column="emp_no" property="empNo"/>
+        <result column="gender" property="gender"/>
         <result column="email" property="email"/>
         <result column="phone" property="phone"/>
         <result column="dept_code" property="deptCode"/>
+        <result column="dept_title" property="deptTitle"/>
         <result column="job_code" property="jobCode"/>
+        <result column="job_name" property="jobName"/>
         <result column="sal_level" property="salLevel"/>
         <result column="salary" property="salary"/>
         <result column="bonus" property="bonus"/>
@@ -29,4 +120,33 @@
         <result column="quit_date" property="quitDate"/>
         <result column="quit_yn" property="quitYn"/>
     </resultMap>
+    
+    <select id="selectJobList" resultMap="jobMap">
+        select
+            *
+        from
+            job
+    </select>
+    
+    <resultMap type="map" id="jobMap">
+        <id column="job_code" property="jobCode"/>
+        <result column="job_name" property="jobName"/>
+    </resultMap>
+    
+    <!-- resultMap을 쓰지 않고 입맛대로 컬럼명 변경하기 -->
+    <select id="selectDeptList" resultType="map">
+        select
+            dept_id "deptCode",
+            dept_title "deptTitle"
+        from
+            dept
+    </select>
+    
+    <resultMap type="map" id="deptMap">
+        <id column="dept_id" property="deptId"/>
+        <result column="dept_title" property="deptTitle"/>
+        <result column="location_id" property="locationId"/>
+    </resultMap>
+    
+    
 </mapper>
